@@ -57,7 +57,7 @@ namespace MvcCrudApplication.Controllers
                 {
                     int no = Convert.ToInt32(log.Id);
                     var logList = dataContext.SignUps.Where(x => x.Id == no).FirstOrDefault();
-                    logList.Id = log.Id;
+                    //logList.Id = log.Id;
                     logList.FirstName = log.FirstName;
                     logList.LastName = log.LastName;
                     logList.UserName = log.UserName;
@@ -83,7 +83,7 @@ namespace MvcCrudApplication.Controllers
                 {
                     dataContext.SignUps.Add(log);
                     dataContext.SaveChanges();
-                    return "User Updated";
+                    return "User Added";
                 }
             }
             else

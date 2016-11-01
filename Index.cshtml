@@ -2,6 +2,7 @@
 <html>
 <head>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/Scripts/SignUpStyle.css" >
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
@@ -17,10 +18,10 @@
 
           <br />
 
-          <input type="button" class="btnAdd" value=" Add User"  />
+          <input type="button" class="btnAdd" value=" Add User" ng-click="AddUserDiv()"  />
 
-          
-              <p class="divHead">User</p>
+          <br />
+              <p class="divHead">User Details</p>
               <table cellpadding="12" class="table table-bordered table-hover">
                   <tr>
                       <td><b>ID</b></td>
@@ -68,71 +69,111 @@
                   </tr>
               </table>
         
+          <center>
+              <div id="UserDiv" style="text-align: center; table-layout: fixed; text-anchor: middle; text-decoration: solid; border-top-color: #7eb8e1; border-bottom-color: #7eb8e1; color: #7eb8e1; ">
+                  <div>
+                      <p class="divHead">{{Action}} SignUp</p>
+                      <form method="post" name="SignUpForm" ng-submit="AddUpdateUser()" ng-valid role="form">
+                          <table>
 
-          <div >
-              <p class="divHead">{{Action}} SignUp</p>
-              <table>
-                  <tr>
-                      <td><b>Id</b></td>
-                      <td>
-                          <input type="text" disabled="disabled" ng-model="UserId" />
-                      </td>
-                  </tr>
-                  <tr>
-                      <td><b>First Name</b></td>
-                      <td>
-                          <input type="text" ng-model="FirstName" />
-                      </td>
-                  </tr>
-                  <tr>
-                      <td><b>Last Name</b></td>
-                      <td>
-                          <input type="text" ng-model="LastName" />
-                      </td>
-                  </tr>
-                  <tr>
-                      <td><b>User Name</b></td>
-                      <td>
-                          <input type="text" ng-model="UserName" />
-                      </td>
-                  </tr>
-                  <tr>
-                      <td><b>Email</b></td>
-                      <td>
-                          <input type="text" ng-model="Email" />
-                      </td>
-                  </tr>
-                  <tr>
-                      <td><b>Mobile No</b></td>
-                      <td>
-                          <input type="text" ng-model="MobileNo" />
-                      </td>
-                  </tr>
-                  <tr>
-                      <td><b>Password</b></td>
-                      <td>
-                          <input type="Password" ng-model="Password" />
-                      </td>
-                  </tr>
-                  <tr>
-                      <td><b>Sex</b></td>
-                      <td>
-                          <input type="text" ng-model="Sex" />
-                      </td>
-                  </tr>
-                  <tr>
-                      <td><b>DateOfBirth</b></td>
-                      <td>
-                          <input type="text" ng-model="DateOfBirth" />
-                      </td>
-                  </tr>
-                  <tr>
-                      <td colspan="2">
-                          <input type="button" class="btnAdd" value="Save" ng-click="AddUpdateUser()" />
-                      </td>
-                  </tr>
-              </table>
-          </div>
+
+                              <tr>
+
+                                  <td><b>Id</b></td>
+                                  <td>
+                                      <input type="text" title="userid" disabled="disabled" ng-model="UserId" />
+                                      <br />
+                                  </td>
+                              </tr>
+
+                              <tr>
+
+                                  <td><b>First Name</b></td>
+                                  <td>
+                                      <input type="text" title="First Name" name="FirstName" placeholder="First Name" ng-model="FirstName" required />
+
+
+
+                                      <span style="color:red" ng-show="SignUpForm.FirstName.$touched && SignUpForm.FirstName.$invalid">FirstName is required.</span>
+
+                                  </td>
+
+                              </tr>
+                              <tr>
+                                  <td><b>Last Name</b></td>
+                                  <td>
+                                      <input type="text" title="Last Name" name="LastName" placeholder="Last Name" ng-model="LastName" required />
+                                      <span style="color:red" ng-show="SignUpForm.LastName.$touched && SignUpForm.LastName.$invalid">LastName is required.</span>
+
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td><b>User Name</b></td>
+                                  <td>
+                                      <input type="text" title="User Name" name="UserName" placeholder="User Name" ng-model="UserName" required />
+                                      <span style="color:red" ng-show="SignUpForm.UserName.$touched && SignUpForm.UserName.$invalid">User Name is required.</span>
+
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td><b>Email</b></td>
+                                  <td>
+                                      <input type="email" title="Email should be as - ''characters@characters.com'" name="Email" placeholder="Email" ng-model="Email" required />
+                                      <span style="color:red" ng-show="SignUpForm.Email.$touched && SignUpForm.Email.$invalid">Email is required.</span>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td><b>Mobile No</b></td>
+                                  <td>
+                                      <input type="number" title="Mobile No" name="MobileNo" ng-minlength="10" ng-maxlength="10" placeholder="MobileNo" ng-model="MobileNo" required />
+                                      <span style="color:red" ng-show="SignUpForm.MobileNo.$touched && SignUpForm.MobileNo.$invalid">Mobile No is required.</span>
+                                      <span ng-show="SignUpForm.MobileNo.$touched && SignUpForm.MobileNo.$error.maxlength"> 10 digits required.</span>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td><b>Password  &nbsp;&nbsp;</b></td>
+                                  <td>
+                                      <input type="Password" name="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" ng-model="Password" required />
+                                      <span style="color:red" ng-show="SignUpForm.Password.$touched && SignUpForm.Password.$invalid">Password is required.</span><br />
+                                     <!-- <span ng-show="SignUpForm.Password.$touched && SignUpForm.Password.$error.minlength">Minimum 6 characters required.</span><br /> -->
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td><b>Sex</b>  &nbsp;&nbsp;</td>
+                                  <td>
+                                  <!--   <input type="text" title="Gender" name="Sex" placeholder="Sex" ng-model="Sex" required />  --> 
+                                      <select  autofocus ng-model="Sex" required>
+                                          <option value="">..Select..</option>
+                                          <option value="Female">Female</option>
+                                          <option value="Male">Male</option>
+                                         
+                                      </select>
+                                      <span ng-show="SignUpForm.Gender.$touched && SignUpForm.Gender.$error">Gender Is Not Selected.</span>
+                                      <br />
+
+                                  </td>
+                                  
+                              </tr>
+                              
+                              <tr>
+                                  <td><b>DateOfBirth  &nbsp;&nbsp;</b></td>
+                                  <td>
+                                      <br />
+                                      <input type="date" title="Date Of Birth" name="DateOfBirth" placeholder="DateOfBirth"  ng-model="DateOfBirth" required />
+                                      <span style="color:red" ng-show="SignUpForm.DateOfBirth.$touched && SignUpForm.DateOfBirth.$invalid">Date Of Birth is required.</span>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td colspan="2">
+                                      <br /><br />
+                                      <input type="submit" class="btnAdd" value="Save" />
+                                  </td>
+                              </tr>
+                          </table>
+                      </form>
+                  </div>
+              </div>
+          </center>
       </div>
 
 </body>

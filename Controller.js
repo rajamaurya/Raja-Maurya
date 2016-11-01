@@ -6,8 +6,8 @@
         debugger;
         var getData = myService.getUsers();
         debugger;
-        getData.then(function (emp) {
-            $scope.Users = emp.data;
+        getData.then(function (usr) {
+            $scope.Users = usr.data;
         }, function () {
             alert('Error in getting records');
         });
@@ -15,10 +15,10 @@
 
     $scope.editUser = function (User) {
         debugger;
-        
-        var getData = myService.getUsers(User.Id);
-        getData.then(function (emp) {
-            $scope.User = emp.data;
+
+       
+        $scope.Id = User.Id;
+        $scope.User = User.data;
             $scope.FirstName = User.FirstName;
             $scope.LastName = User.LastName;
             $scope.UserName = User.UserName;
@@ -32,16 +32,16 @@
         },
         function () {
             alert('Error in getting records');
-        });
+       
     }
 
     $scope.AddUpdateUser = function () {
         debugger;
-        var User = {
+        var SignUp = {
             FirstName: $scope.FirstName,
             LastName: $scope.LastName,
             UserName: $scope.UserName,
-            
+
             Email: $scope.Email,
             MobileNo: $scope.MobileNo,
             Password: $scope.Password,
@@ -50,13 +50,13 @@
         };
         var getAction = $scope.Action;
 
-        if (getAction == "UpdateUser") {
+        if (getAction == "Update") {
             SignUp.Id = $scope.Id;
-            var getData = myService.UpdateUser(SignUp);
+            var getData = myService.Update(SignUp);
             getData.then(function (msg) {
                 GetAllUser();
                 alert(msg.data);
-               // $scope.divEmployee = false;
+                $scope.divEmployee = false;
             }, function () {
                 alert('Error in updating record');
             });
@@ -72,10 +72,20 @@
         }
     }
 
+    $scope.AddUserDiv = function () {
+        ClearFields();
+
+        $scope.Action = "Add";
+        $scope.divEmployee = true;
+    }
     $scope.Save = function () {
         ClearFields();
-        $scope.Action = "AddUser";
-       // $scope.divEmployee = true;
+        if ($scope != null) {
+            $scope.Action = "AddUser";
+            $scope.divEmployee = true;
+        }
+        else
+            alert("Data Required");
     }
 
     $scope.delete = function (user) {

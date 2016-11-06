@@ -1,0 +1,251 @@
+<div data-ng-show="vm.trail.envconfig===true">
+    <form name="versionConfigForm" id="versionConfigForm" role="form" data-ng-submit="vm.saveVersionControl(versionConfigForm)" method="get" novalidate>
+            <div class="panel panel-group">
+                <div>
+                    <div class='form-group' style="padding-top: 20px">
+                        <div ng-class="{ 'has-error': (vm.submitted && projectConfigForm.Name.$invalid) || (projectConfigForm.Name.$dirty && projectConfigForm.Name.$invalid) }" style="padding-top: 15px">
+                            <label class="control-label col-sm-4 md-required">Name</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="Name" style="width: 50%" class="form-control" ng-model="vm.project.Name" data-ng-pattern="/^[a-zA-Z0-9.]+$/" data-popover-trigger="mouseenter" maxlength="100" data-popover="Project name in <Name> format" required />
+                                <div data-ng-show="(vm.submitted || projectConfigForm.Name.$dirty)">
+                                    <p data-ng-show="projectConfigForm.Name.$error.required" class="help-block" data-translate>Project name is required.</p>
+                                    <p data-ng-show="projectConfigForm.Name.$error.pattern" class="help-block" data-translate>Project name has invalid characters. Please ensure that the user name has only alphanumeric characters.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='form-group' style="padding-top: 20px">
+                        <div style="padding-top: 15px">
+                            <label class="control-label col-sm-4">Audit Required</label>
+                            <div class="col-sm-8">
+                                <input type="checkbox" style="cursor: pointer" data-ng-model="vm.project.IsAuditRequired" />                               
+                            </div>
+                        </div>
+                    </div>
+                    <div class='form-group' style="padding-top: 10px">
+                        <div style="clear: both; padding-top: 15px">
+                            <label class="control-label col-sm-4">Status</label>
+                            <div class="col-sm-8">
+                                <input type="radio" name="Status" value="True" style="cursor: pointer" data-ng-model="vm.project.IsActive" /> Active
+                                <input type="radio" name="Status" value="False" style="cursor: pointer" ng-checked="true" data-ng-model="vm.project.IsActive" /> Inactive                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-next btn-first" ng-disabled="isDisabled">Next</button><!--added ng-disa-->
+                    <button type="button" data-ng-click="vm.reset(projectConfigForm)" class="btn btn-primary" data-translate>Cancel</button>
+                </div>
+            </div>
+        
+        <div class="panel panel-group" style="display: none;">
+            <div>
+                <div class='form-group' style="padding-top: 15px">
+                    <div ng-class="{ 'has-error': vm.esubmitted && envConfigForm.Environment.$invalid }" style="padding-top: 15px">
+                        <label class="control-label col-sm-4">Environment</label>
+                        <div class="col-sm-8">
+                            <select name="Environment" class="form-control" style="width: 40%" data-ng-model="vm.environment" ng-options="item.Key for item in vm.environments track by item.Value" required>
+                                <option value="">---Please select---</option>
+								<option value="windows">Windows</option>
+								<option vlaue="ubuntu">Ubuntu</option>
+                            </select>
+                            <div data-ng-show="vm.esubmitted">
+                                <p data-ng-show="vm.environment === null || vm.environment.Key === null" class="help-block" data-translate>Environment is required.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='form-group' style="padding-top: 15px">
+                    <div ng-class="{ 'has-error': vm.esubmitted && envConfigForm.Environment.$invalid }" style="padding-top: 15px">
+                        <label class="control-label col-sm-4">Browser</label>
+                        <div class="col-sm-8">
+                            <select name="Browser" class="form-control" style="width: 40%" data-ng-model="vm.browser" ng-options="item.Key for item in vm.browsers track by item.Value" required>
+                                <option value="">---Please select---</option>
+								<option value="chrome">Chrome</option>
+								<option value="firefox">Firefox</option>
+                            </select>
+                            <div data-ng-show="vm.esubmitted">
+                                <p data-ng-show="vm.browser === null || vm.browser.Key === null" class="help-block" data-translate>Environment is required.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary btn-next" data-translate>Next</button>
+                <button type="button" data-ng-click="vm.reset(envConfigForm)" class="btn btn-primary" data-translate>Cancel</button>
+            </div>
+        </div>
+		
+		 <div class="panel panel-group" style="display: none;">
+            <div>
+                    <div class='form-group'>
+                            <label class="control-label col-sm-4" for="Name">Which tool would you like to integrate ?</label>
+                            <div class="col-sm-8">
+                                <div style="height: 100px; overflow :auto;width: 30%">
+                                    <table class="table table-hover table-bordered table-condensed" style="width: 100%">
+                                        <tbody class="gridBody">
+                                            <tr data-ng-repeat="mg in vm.managements">
+                                                <td class="text-left"><input type="radio" data-ng-model="vm.toolControl.name" data-ng-value="mg.Value" style="cursor: pointer" data-ng-click="vm.getManagementToolData()" /></td>
+                                                <td class="text-left">{{mg.Key}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>                            
+                            </div>
+                    </div>
+                    <div class='form-group' data-ng-hide="angular.isDefined(vm.toolControl.name) && vm.toolControl.name === '' || vm.toolControl.name === ''">
+                        <label class="control-label col-sm-12">Please provide below information ?</label>
+                    </div>
+                    <div class='form-group' data-ng-hide="angular.isDefined(vm.toolControl.name) && vm.toolControl.name === '' || vm.toolControl.name === ''">
+                        <div class="form-group" ng-class="{ 'has-error': (vm.msubmitted && mgConfigForm.Url.$invalid) || (mgConfigForm.Url.$dirty && mgConfigForm.Url.$invalid) }">
+                            <label class="control-label col-sm-4">{{vm.toolControl.name}} Url </label>
+                            <div class="col-sm-8">
+                                <input type="url" name="Url" class="form-control" ng-model="vm.toolControl.url" style="width: 50%" data-popover-trigger="mouseenter" maxlength="100" data-popover="Url in http://[domain]/path(s)/ format" required />
+                                <div data-ng-show="(vm.msubmitted || mgConfigForm.Url.$dirty)">
+                                    <p data-ng-show="mgConfigForm.Url.$error.required" class="help-block" data-translate>Url is required.</p>
+                                    <p data-ng-show="mgConfigForm.Url.$error.url" class="help-block" data-translate>Url has invalid characters. Please ensure that the format should be http://[domain]/path(s)/.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='form-group' data-ng-hide="angular.isDefined(vm.toolControl.name) && vm.toolControl.name === '' || vm.toolControl.name === ''">
+                        <div class="form-group" ng-class="{ 'has-error': (vm.msubmitted && mgConfigForm.Username.$invalid) || (mgConfigForm.Username.$dirty && mgConfigForm.Username.$invalid) }">
+                            <label class="control-label col-sm-4">Username</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="Username" class="form-control" ng-model="vm.toolControl.username" style="width: 50%" data-ng-pattern="/^[a-zA-Z@0-9.]+$/" data-popover-trigger="mouseenter" maxlength="100" data-popover="User name in <Name> format" required />
+                                <div data-ng-show="(vm.msubmitted || projectConfigForm.Username.$dirty)">
+                                    <p data-ng-show="mgConfigForm.Username.$error.required" class="help-block" data-translate>Username is required.</p>
+                                    <p data-ng-show="mgConfigForm.Username.$error.pattern" class="help-block" data-translate>Username has invalid characters. Please ensure that the user name has only alphanumeric characters.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='form-group' data-ng-hide="angular.isDefined(vm.toolControl.name) && vm.toolControl.name || vm.toolControl.name === ''">
+                        <div class="form-group" ng-class="{ 'has-error': (vm.msubmitted && mgConfigForm.Password.$invalid) || (mgConfigForm.Password.$dirty && mgConfigForm.Password.$invalid) }">
+                            <label class="control-label col-sm-4">Password</label>
+                            <div class="col-sm-8">
+                                <input type="password" name="Password" class="form-control" ng-model="vm.toolControl.password" style="width: 50%" data-ng-pattern="/^[a-zA-Z0-9.!@#$&()]+$/" data-popover-trigger="mouseenter" maxlength="100" data-popover="Password please" required />
+                                <div data-ng-show="(vm.msubmitted || projectConfigForm.Name.$dirty)">
+                                    <p data-ng-show="mgConfigForm.Password.$error.required" class="help-block" data-translate>Password is required.</p>
+                                    <p data-ng-show="mgConfigForm.Password.$error.pattern" class="help-block" data-translate>Password has invalid characters. Please ensure that the password has only alphanumeric characters.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+					 <div class="modal-footer">
+                <button type="submit" class="btn btn-primary btn-next" data-translate>Next</button>
+                <button type="button" data-ng-click="vm.reset(envConfigForm)" class="btn btn-primary" data-translate>Cancel</button>
+            </div>ssss
+            </div>
+        </div>
+      
+		
+		
+    
+        <div class="panel panel-group" style="display: none;">
+            <div>
+                <div class='form-group'>
+                    <label class="control-label col-sm-4" for="Name">Which tool would you like to integrate ?</label>
+                    <div class="col-sm-8">
+                        <div style="height: 100px; overflow :auto;width: 30%">
+                            <table class="table table-hover table-bordered table-condensed" style="width: 100%">
+                                <tbody class="gridBody">
+                                    <tr data-ng-repeat="vc in vm.versionControls">
+                                        <td class="text-left"><input type="radio" data-ng-model="vm.versionControl.name" data-ng-click="vm.getVersionControlData(vc.Key)" data-ng-value="vc.Value" style="cursor: pointer" /></td>
+                                        <td class="text-left">{{vc.Key}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class='form-group' data-ng-hide="angular.isDefined(vm.versionControl.name) && vm.versionControl.name || vm.versionControl.name === ''">
+                    <label class="control-label col-sm-12">Please provide below information ?</label>
+                </div>
+                <div class='form-group'>
+                    <div class='form-group' data-ng-hide="angular.isDefined(vm.versionControl.name) && vm.versionControl.name || vm.versionControl.name === ''">
+                        <div class="form-group" ng-class="{ 'has-error': (vm.vsubmitted && versionConfigForm.Url.$invalid) || (versionConfigForm.Url.$dirty && versionConfigForm.Url.$invalid) }">
+                            <label class="control-label col-sm-4">{{vm.versionControl.name!='' ? vm.versionControlName : ''}} Url </label>
+                            <div class="col-sm-8">
+                                <input type="url" name="Url" class="form-control" ng-model="vm.versionControl.url" style="width: 50%" data-popover-trigger="mouseenter" maxlength="100" data-popover="Url in http://[domain]/path(s)/ format" required />
+                                <div data-ng-show="(vm.vsubmitted || versionConfigForm.Url.$dirty)">
+                                    <p data-ng-show="versionConfigForm.Url.$error.required" class="help-block" data-translate>Url is required.</p>
+                                    <p data-ng-show="versionConfigForm.Url.$error.url" class="help-block" data-translate>Url has invalid characters. Please ensure that the format should be http://[domain]/path(s)/.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-ng-show="vm.versionControl.IsTFS">
+                        <div class='form-group' data-ng-hide="angular.isDefined(vm.versionControl.name) && vm.versionControl.name || vm.versionControl.name === ''">
+                            <div class="form-group" ng-class="{ 'has-error': (vm.vsubmitted && versionConfigForm.ServerPath.$invalid) || (versionConfigForm.ServerPath.$dirty && versionConfigForm.ServerPath.$invalid) }">
+                                <label class="control-label col-sm-4">Server Path </label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="ServerPath" class="form-control" ng-model="vm.versionControl.serverpath" style="width: 50%" data-popover-trigger="mouseenter" maxlength="100" data-popover="Server Path in $/[Framework]/[FolderName] format" ng-required="vm.versionControl.IsTFS" />
+                                    <div data-ng-show="(vm.vsubmitted || versionConfigForm.ServerPath.$dirty)">
+                                        <p data-ng-show="versionConfigForm.ServerPath.$error.required" class="help-block" data-translate>Server Path is required.</p>
+                                        <p data-ng-show="versionConfigForm.ServerPath.$error.pattern" class="help-block" data-translate>Server Path has invalid characters. Please ensure that the format should be $/[Framework]/[FolderName].</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='form-group' data-ng-hide="angular.isDefined(vm.versionControl.name) && vm.versionControl.name || vm.versionControl.name === ''">
+                        <div class="form-group" ng-class="{ 'has-error': (vm.vsubmitted && versionConfigForm.Username.$invalid) || (versionConfigForm.Username.$dirty && versionConfigForm.Username.$invalid) }">
+                            <label class="control-label col-sm-4">Username</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="Username" class="form-control" ng-model="vm.versionControl.username" style="width: 50%" data-ng-pattern="/^[a-zA-Z@0-9.]+$/" data-popover-trigger="mouseenter" maxlength="100" data-popover="User name in <Name> format" required />
+                                <div data-ng-show="(vm.vsubmitted || versionConfigForm.Username.$dirty)">
+                                    <p data-ng-show="versionConfigForm.Username.$error.required" class="help-block" data-translate>Username is required.</p>
+                                    <p data-ng-show="versionConfigForm.Username.$error.pattern" class="help-block" data-translate>Username has invalid characters. Please ensure that the user name has only alphanumeric characters.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='form-group' data-ng-hide="angular.isDefined(vm.versionControl.name) && vm.versionControl.name || vm.versionControl.name === ''">
+                        <div class="form-group" ng-class="{ 'has-error': (vm.vsubmitted && versionConfigForm.Password.$invalid) || (versionConfigForm.Password.$dirty && versionConfigForm.Password.$invalid) }">
+                            <label class="control-label col-sm-4">Password</label>
+                            <div class="col-sm-8">
+                                <input type="password" name="Password" class="form-control" ng-model="vm.versionControl.password" style="width: 50%" data-ng-pattern="/^[a-zA-Z0-9.!@#$&()]+$/" data-popover-trigger="mouseenter" maxlength="100" data-popover="Password please" required />
+                                <div data-ng-show="(vm.vsubmitted || versionConfigForm.Name.$dirty)">
+                                    <p data-ng-show="versionConfigForm.Password.$error.required" class="help-block" data-translate>Password is required.</p>
+                                    <p data-ng-show="versionConfigForm.Password.$error.pattern" class="help-block" data-translate>Password has invalid characters. Please ensure that the user name has only alphanumeric characters.</p>
+                                </div>
+                            </div>
+                        </div>
+						
+                    </div>
+					
+                </div>
+				
+       
+            </div>
+			 <div class="modal-footer clearfix">
+            <button type="submit" class="btn btn-primary btn-next btn-save" data-translate>Save</button>
+            <button type="button" data-ng-click="vm.reset(versionConfigForm)" class="btn btn-primary" data-translate>Cancel</button>
+        </div>
+        </div>
+        
+    </form>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript">
+	 	jQuery(document).ready(function($) {
+			jQuery('.btn-next').click(function(e){
+			
+				if(jQuery(this).hasClass('btn-save')) {
+					//form submit
+					
+				} 
+				else {
+				    e.preventDefault();
+					jQuery(this).closest('.panel.panel-group').hide();
+					jQuery(this).closest('.panel.panel-group').next().show();
+					
+				}
+			});
+		});
+	</script>
+   
+</div>

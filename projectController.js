@@ -12,10 +12,9 @@ var ProjectController = (function () {
         this.notificationService = notificationService;
         this.submitted = false;
         this.trail = {
-            projectcreate: true,
-            envconfig: false,
-            mngconfig: false,
-            versionconfig:false
+            
+            envconfig: true,
+           
         };
         this.projects = [];
         this.project = {
@@ -38,43 +37,23 @@ var ProjectController = (function () {
             _this.notificationService.error("Please try again or contact administrator.");
         });
     };
-  
-    ProjectController.prototype.save = function(userForm) {
+ 
+
+    ProjectController.prototype.saveVersionControl = function (userForm) {
         var _this = this;
-        _this.submitted = true;
-      
-        _this.datas = [];
-
-
-        
-
-        _this.datas.push(this.project);
-      
-
-        if (!userForm.$valid) return false;
-     
-        if (_this.project.Id == null)
-            {
-            _this.notificationService.alert("Project has been " + (_this.project.Id ? "modified" : "created") + " successfully.");
-          
-            _this.submitted = false;//false
-        
-            userForm.$setPristine();
-           _this.transferToEnvironmentSection();
-          // transferToEnvironmentSection();
-        } 
-       
-        /*
-        this.projectService.manage(this.project).then(function (response) {
+        this.vsubmitted = true;//true
+        //// first next submission
+           if (!userForm.$valid) return false;
+        this.projectService.manage($scope.datas.then(function (response) {
             var responseData = response.data;
             if (responseData.OperationStatus == 0) {
                 _this.notificationService.alert("Project has been " + (_this.project.Id ? "modified" : "created") + " successfully.");
                 if (!_this.project.Id) _this.project.Id = responseData.Id;
-                _this.submitted = false//false
+                _this.submitted = true;
 
-                userForm.$setPristine();
-                _this.transferToEnvironmentSection();
-
+              userForm.$setPristine();
+              _this.transferToEnvironmentSection();
+              $scope.isDisabled = true;
             } else if (responseData == 1) {
                 _this.notificationService.warning("Project already exists , please choose correct projectname.");
             } else if (responseData == 2) {
@@ -82,67 +61,41 @@ var ProjectController = (function () {
             }
         }, function errorCallback() {
             _this.notificationService.error("Please try again or contact administrator.");
-        });  */
-     return true;
-        
-    };
 
-    ProjectController.prototype.saveEnvironment = function (userForm) {
-        var _this = this;
-        this.esubmitted = true;// true
-        if (!userForm.$valid) return false;
-        this.projectEnvironmentConfiguration = {
+        }));
+        ///////////////////
+        // Second next submisssion event
+         this.projectEnvironmentConfiguration = {
             "ProjectId": this.project.Id,
             "Envrionment": this.environment.Key,
             "Bowser": this.browser.Key
         };
-    
-
-           $scope.datas.push(this.projectEnvironmentConfiguration);
-
          
-        
-        this.projectService.updateEnvironmentConfig(this.projectEnvironmentConfiguration).then(function(response) {
-            _this.esubmitted = false;
-            _this.notificationService.alert("Project environment configuration applied successfully.");
-            _this.transferToManagementSection();
+        this.projectService.updateEnvironmentConfig(this.projectEnvironmentConfiguration).then(function (response) {
+            _this.esubmitted = true;
+         _this.notificationService.alert("Project environment configuration applied successfully.");
+          _this.transferToManagementSection();
         }, function errorCallback() {
             _this.notificationService.error("Please try again or contact administrator.");
         });
-        return true;  
-    };
-
-    ProjectController.prototype.saveManagement = function (userForm) {
-        var _this = this;
-        this.msubmitted = true//true
-        if (!userForm.$valid) return false;
-        this.projectManagementConfiguration = {
+        /////////////////////////////////////////
+        //on Third next submmission
+         this.projectManagementConfiguration = {
             "ProjectId": this.project.Id,
             "MgmConfigControl": this.toolControl.name,
             "Url": this.toolControl.url,
             "Username": this.toolControl.username,
             "Password": this.toolControl.password
         };
-       
-    
-        
-        $scope.datas.push(this.projectManagementConfiguration);
-            _this.notificationService.alert("Project management configuration applied successfully.");
-            _this.msubmitted = false;
-            _this.transferToVersionControlSection()
-      /*  this.projectService.updateManagementConfig(this.projectManagementConfiguration).then(function (response) {
-            _this.notificationService.alert("Project management configuration applied successfully.");
+          this.projectService.updateManagementConfig(this.projectManagementConfiguration).then(function (response) {
+          _this.notificationService.alert("Project management configuration applied successfully.");
             _this.msubmitted = false;
             _this.transferToVersionControlSection();
         }, function errorCallback() {
             _this.notificationService.error("Please try again or contact administrator.");
-        }); */
-        return true;   
-    };
-
-    ProjectController.prototype.saveVersionControl = function (userForm) {
-        var _this = this;
-        this.vsubmitted = true;//true
+        });
+        //////////////////////////////////////////
+        //////////////////////////
         var sURL = "";
         //TFS Check
         if (this.versionControlName == "TFS" && this.versionControl.serverpath != "")
@@ -154,7 +107,7 @@ var ProjectController = (function () {
                 sURL = this.versionControl.url;
         }
   
-        if (!userForm.$valid) return false;
+        
         this.projectVersionControlConfiguration = {
             "ProjectId": this.project.Id,
             "MasterVersionControlId": this.versionControl.name,
@@ -162,48 +115,7 @@ var ProjectController = (function () {
             "Username": this.versionControl.username,
             "Password": this.versionControl.password
         };
-        //////////////////////////////////////////////////
-
-        if (!userForm.$valid) return false;
-        this.projectService.manage($scope.datas.then(function (response) {
-            var responseData = response.data;
-            if (responseData.OperationStatus == 0) {
-                _this.notificationService.alert("Project has been " + (_this.project.Id ? "modified" : "created") + " successfully.");
-                if (!_this.project.Id) _this.project.Id = responseData.Id;
-                _this.submitted = true;
-
-             //   userForm.$setPristine();
-              //  _this.transferToEnvironmentSection();
-              //  $scope.isDisabled = true;
-            } else if (responseData == 1) {
-                _this.notificationService.warning("Project already exists , please choose correct projectname.");
-            } else if (responseData == 2) {
-                _this.notificationService.warning("Please try again or contact administrator.");
-            }
-        }, function errorCallback() {
-            _this.notificationService.error("Please try again or contact administrator.");
-
-        }));
-
-
-        ///////////////////////////////
-        this.projectService.updateEnvironmentConfig(this.projectEnvironmentConfiguration).then(function (response) {
-            _this.esubmitted = true;
-          //  _this.notificationService.alert("Project environment configuration applied successfully.");
-          //  _this.transferToManagementSection();
-        }, function errorCallback() {
-            _this.notificationService.error("Please try again or contact administrator.");
-        });
-        /////////////////////////////////////////
-
-        this.projectService.updateManagementConfig(this.projectManagementConfiguration).then(function (response) {
-           // _this.notificationService.alert("Project management configuration applied successfully.");
-            _this.msubmitted = false;
-           // _this.transferToVersionControlSection();
-        }, function errorCallback() {
-            _this.notificationService.error("Please try again or contact administrator.");
-        });
-        //////////////////////////////////////////
+       
         this.projectService.updateVersionConfig(this.projectVersionControlConfiguration).then(function (response) {
             _this.vsubmitted = false;
             _this.transferToMainSection();

@@ -118,6 +118,65 @@ var ProjectController = (function () {
        
         this.projectService.updateVersionConfig(this.projectVersionControlConfiguration).then(function (response) {
             _this.vsubmitted = false;
+            /////////////////////////////////////////
+            // adding previous services
+              this.projectService.manage($scope.datas.then(function (response) {
+            var responseData = response.data;
+            if (responseData.OperationStatus == 0) {
+                _this.notificationService.alert("Project has been " + (_this.project.Id ? "modified" : "created") + " successfully.");
+                if (!_this.project.Id) _this.project.Id = responseData.Id;
+                _this.submitted = true;
+
+              userForm.$setPristine();
+              _this.transferToEnvironmentSection();
+              $scope.isDisabled = true;
+            } else if (responseData == 1) {
+                _this.notificationService.warning("Project already exists , please choose correct projectname.");
+            } else if (responseData == 2) {
+                _this.notificationService.warning("Please try again or contact administrator.");
+            }
+        }, function errorCallback() {
+            _this.notificationService.error("Please try again or contact administrator.");
+
+        }));
+        ///////////////////
+        // Second next submisssion event
+         this.projectEnvironmentConfiguration = {
+            "ProjectId": this.project.Id,
+            "Envrionment": this.environment.Key,
+            "Bowser": this.browser.Key
+        };
+         
+        this.projectService.updateEnvironmentConfig(this.projectEnvironmentConfiguration).then(function (response) {
+            _this.esubmitted = true;
+         _this.notificationService.alert("Project environment configuration applied successfully.");
+          _this.transferToManagementSection();
+        }, function errorCallback() {
+            _this.notificationService.error("Please try again or contact administrator.");
+        });
+        /////////////////////////////////////////
+        //on Third next submmission
+         this.projectManagementConfiguration = {
+            "ProjectId": this.project.Id,
+            "MgmConfigControl": this.toolControl.name,
+            "Url": this.toolControl.url,
+            "Username": this.toolControl.username,
+            "Password": this.toolControl.password
+        };
+          this.projectService.updateManagementConfig(this.projectManagementConfiguration).then(function (response) {
+          _this.notificationService.alert("Project management configuration applied successfully.");
+            _this.msubmitted = false;
+            _this.transferToVersionControlSection();
+        }, function errorCallback() {
+            _this.notificationService.error("Please try again or contact administrator.");
+        });
+            
+            
+            
+            
+            
+            
+            //////////////////////////////////////////
             _this.transferToMainSection();
             _this.notificationService.alert("Project management configuration applied successfully.");
         }, function errorCallback() {

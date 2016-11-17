@@ -1,0 +1,74 @@
+<table style="width: 100%;height: 100%;table-layout: fixed" border="0">
+    <tr>
+        <td valign="top" style="width: 20%;text-align: left">
+            <!--Left section-->
+            <button type="button" ngf-select="vm.localStoreMultipleFiles($files)" ngf-max-size="5MB"
+                    ngf-pattern=".xls,.xlsx" class="btn btn-primary" style="cursor: pointer">Upload
+            </button>&nbsp;&nbsp;
+            <button type="button" data-ng-click="vm.exportSheet()" class="btn btn-primary" style="cursor: pointer">Download</button><br/>
+            <div style="height: 500px; overflow :auto;width: 100%">
+                <table style="width: 95%">
+                    <tbody>
+                        <tr data-ng-repeat="sheet in vm.sheets" >
+                            <td>
+                                <input style="cursor: pointer" type="checkbox" data-ng-model="vm.downloadSheets[sheet.Value]" />&nbsp;
+                                <img src="/UI/images/cross.png" width="10px" height="10px" style="cursor: pointer" data-ng-click="vm.dropSheet($index)" />&nbsp;
+                                <a style="color: blue" href="javascript:void(0)" data-ng-click="vm.selectedsheet=sheet;vm.getTestData();">{{sheet.Key}}</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+        <td style="width: 80%; text-align: right; background-color: lightgrey" data-ng-init="vm.searchBox=false">
+            <!--Right section-->
+            <select class="btn btn-primary" style="width: 25%" data-ng-model="vm.environment" data-ng-change="vm.getTestSheets(vm.environment.Key)" ng-options="item.Key for item in vm.environments track by item.Value" required>
+                <option value="">--Select environment--</option>
+            </select>&nbsp;&nbsp;
+            <button type="button" data-ng-click="vm.addNewSheet()" class="btn btn-primary" style="cursor: pointer">New Sheet</button>&nbsp;&nbsp;
+            <button type="button" data-ng-click="vm.addNewColumn()" class="btn btn-primary" style="cursor: pointer">New Column</button>&nbsp;&nbsp;
+            <button type="button" data-ng-click="vm.save()" class="btn btn-primary" style="cursor: pointer">Save</button>&nbsp;&nbsp;
+            <button type="button" data-ng-click="vm.cancel()" class="btn btn-primary" style="cursor: pointer">Cancel</button>&nbsp;&nbsp;
+            <div style="height: 500px; overflow :auto;width: 100%;">
+                <table class="table table-hover table-bordered table-condensed tableinput" style="width: 500px;border-color: black" data-ng-if="vm.testdata.Columns.length>0">
+                    <thead>
+                        <tr style="background-color: lightgray">
+                            <th></th>
+                            <th data-ng-repeat="column in vm.testdata.Columns" data-ng-show="column.isDeleted!=true" data-ng-init="vm.filterSearchBox[$index]=false">
+                                <input type="text" data-ng-model="column.Name" style="width: 100% !important" data-ng-pattern="/^[a-zA-Z0-9.]+$/" maxlength="100" />
+                                <a href="javascript:void(0)" data-ng-click="vm.filterSearchBox[$index] = !vm.filterSearchBox[$index]"><img src="/UI/images/down-dropdown.png" width="20px" height="20px" /></a>
+                                <a href="javascript:void(0)" data-ng-click="vm.deleteColumn($index)"><img src="/UI/images/minus.png" width="16px" height="16px" /></a>
+                                <div style="position: absolute;z-index:100;background-color: lightcyan" data-ng-if="vm.filterSearchBox[$index]===true">
+                                    <input type="text" data-ng-model="vm.filterSearch[column.Name]" />
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="gridBody">
+                        <tr data-ng-repeat="row in vm.testdata.Rows | filter : vm.filterSearch" data-ng-show="row.isDeleted!=true">
+                            <td style="background-color: lightgray">
+                                <a style="cursor: pointer;" data-ng-click="vm.deleteRow($index)">
+                                    <img src="/UI/images/cross.png" width="16px" height="16px" alt="Delete row." />
+                                </a>
+                            </td>
+                            <td data-ng-repeat="column in vm.testdata.Columns" data-ng-show="column.isDeleted!=true">
+                                <input type="text" data-ng-model="row[column.Name]" data-ng-pattern="/^[a-zA-Z0-9.]+$/" maxlength="100" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p align="left" data-ng-if="vm.testdata.Columns.length>0">
+                    <a data-ng-click="vm.addNewRow()" title="Add new row" style="cursor: pointer;"><img src="/UI/images/plus.png" width="16px" height="16px" alt="Add new case." /></a>
+                </p>
+            </div>
+        </td>
+    </tr>
+</table>
+<style>    .tableinput input{ background: none !important;border: none !important;width: 200px}
+    .table-bordered td {
+        border: 1px solid #ccc !important;
+    }
+    .table-bordered th {
+        border: 1px solid #ccc !important;
+    }
+</style>
